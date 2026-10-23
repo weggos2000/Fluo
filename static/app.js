@@ -32,6 +32,9 @@ const naam = (s) => `${s.achternaam} ${s.voornaam}`.trim();
 const vergelijkNaam = (a, b) => a.achternaam.localeCompare(b.achternaam, "nl", { sensitivity: "base" })
   || a.voornaam.localeCompare(b.voornaam, "nl", { sensitivity: "base" });
 const vergelijkKlas = (a, b) => a.localeCompare(b, "nl", { numeric: true });
+// Leerlingen staan altijd in volgorde van klasnummer (zonder nummer achteraan, dan op naam)
+const vergelijkNr = (a, b) => (a.nr ?? Infinity) - (b.nr ?? Infinity) || vergelijkNaam(a, b);
+const vergelijkKlasNr = (a, b) => vergelijkKlas(a.klas, b.klas) || vergelijkNr(a, b);
 const ptsBadge = (p) => `<span class="pts${p ? "" : " zero"}">${p}</span>`;
 
 function toast(text) {
@@ -132,7 +135,7 @@ async function download(path) {
 // ---------- afgeleide gegevens ----------
 const jaren = () => [...new Set(students.map((s) => s.jaar))].sort((a, b) => a - b);
 const klassenVan = (jaar) => [...new Set(students.filter((s) => s.jaar === jaar).map((s) => s.klas))].sort(vergelijkKlas);
-const leerlingenVan = (klas) => students.filter((s) => s.klas === klas).sort(vergelijkNaam);
+const leerlingenVan = (klas) => students.filter((s) => s.klas === klas).sort(vergelijkNr);
 const totaal = (lijst) => lijst.reduce((t, s) => t + s.punten, 0);
 
 function gefilterd(f) {
@@ -256,7 +259,7 @@ const views = {
     const term = app.querySelector("#q").value.trim().toLowerCase();
     const res = app.querySelector("#res");
     if (term.length < 2) { res.innerHTML = `<p class="empty">Typ minstens 2 letters.</p>`; return; }
-    const hits = gefilterd({ graad: "", jaar: "", klas: "", zoek: term }).sort(vergelijkNaam).slice(0, 60);
+    const hits = gefilterd({ graad: "", jaar: "", klas: "", zoek: term }).sort(vergelijkKlasNr).slice(0, 60);
     res.innerHTML = hits.length ? `<div class="list">${hits.map((s) => leerlingRij(s, { toonKlas: true })).join("")}</div>` : `<p class="empty">Niemand gevonden.</p>`;
   },
 
@@ -335,9 +338,9 @@ const adminTabs = {
       const kolommen = [["klas", "Klas"], ["nr", "Nr", "num"], ["achternaam", "Naam"], ["helm_dagen", "⛑️", "num"], ["fluo_dagen", "🦺", "num"], ["correctie", "±", "num"], ["punten", "Punten", "num"]];
       const sorteer = (a, b) => {
         const k = adminFilter.sort;
-        const v = k === "klas" ? vergelijkKlas(a.klas, b.klas) || vergelijkNaam(a, b)
+        const v = k === "klas" || k === "nr" ? vergelijkKlasNr(a, b)
           : k === "achternaam" ? vergelijkNaam(a, b)
-          : (a[k] ?? 0) - (b[k] ?? 0) || vergelijkNaam(a, b) * -adminFilter.dir;
+          : (a[k] ?? 0) - (b[k] ?? 0) || vergelijkKlasNr(a, b) * adminFilter.dir;
         return v * adminFilter.dir;
       };
       const lijst = gefilterd(adminFilter).sort(sorteer);

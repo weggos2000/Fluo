@@ -84,7 +84,7 @@ def all_students():
                COALESCE(MAX(CASE WHEN r.datum = ? THEN r.fluo END), 0) AS fluo_vandaag
         FROM leerlingen l LEFT JOIN registraties r ON r.leerling_id = l.id
         GROUP BY l.id
-        ORDER BY l.jaar, l.klas, l.achternaam COLLATE NOCASE, l.voornaam COLLATE NOCASE
+        ORDER BY l.jaar, l.klas, l.nr IS NULL, l.nr, l.achternaam COLLATE NOCASE, l.voornaam COLLATE NOCASE
     """, (today, today)).fetchall()
     result = []
     for r in rows:
@@ -161,6 +161,12 @@ def draw_winners(candidates, count):
 class Handler(SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=str(STATIC), **kwargs)
+
+    def end_headers(self):
+        # Laat browsers altijd controleren op een nieuwe versie, zodat updates meteen op elke gsm staan
+        if not self.path.startswith("/api/"):
+            self.send_header("Cache-Control", "no-cache")
+        super().end_headers()
 
     def log_message(self, fmt, *args):
         if not self.path.startswith("/api/state"):
@@ -242,7 +248,7 @@ class Handler(SimpleHTTPRequestHandler):
                     SELECT r.datum, l.klas, l.nr, l.achternaam, l.voornaam, r.helm, r.fluo
                     FROM registraties r JOIN leerlingen l ON l.id = r.leerling_id
                     WHERE r.helm OR r.fluo
-                    ORDER BY r.datum, l.klas, l.achternaam COLLATE NOCASE
+                    ORDER BY r.datum, l.klas, l.nr IS NULL, l.nr, l.achternaam COLLATE NOCASE
                 """).fetchall()
             return self.send_csv(
                 f"fluo-registraties-{date.today().isoformat()}.csv",

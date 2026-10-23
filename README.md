@@ -8,7 +8,7 @@ Per dag levert elk 1 punt op. Werkt in de browser op iPhone, Android en pc, en a
 
 **Iedereen**
 - Startscherm: kies **Klassen** of **Zoeken**
-- Klassen: kies het jaar (gegroepeerd per graad) → de klas → namenlijst, alfabetisch op achternaam, met klasnummer,
+- Klassen: kies het jaar (gegroepeerd per graad) → de klas → namenlijst in volgorde van klasnummer,
   punten per leerling en het klastotaal
 - Tik op een leerling → duid **Helm** en/of **Fluovestje** aan (+1 punt elk). Verkeerd getikt? Nog eens tikken maakt het ongedaan.
   Per dag kan een leerling dus max. 2 punten krijgen.
