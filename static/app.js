@@ -46,7 +46,13 @@ function toast(text) {
 async function api(path, body) {
   const headers = { "X-Code": store.get("fluo-code", ""), "X-Admin": session.get("fluo-admin") };
   if (body !== undefined) headers["Content-Type"] = "application/json";
-  const res = await fetch(path, { method: body === undefined ? "GET" : "POST", headers, body: body === undefined ? undefined : JSON.stringify(body) });
+  let res;
+  try {
+    res = await fetch(path, { method: body === undefined ? "GET" : "POST", headers, body: body === undefined ? undefined : JSON.stringify(body) });
+  } catch {
+    zetOnline(false);
+    throw Object.assign(new Error("Geen verbinding met de server"), { netwerk: true });
+  }
   if (res.status === 401) { store.set("fluo-code", ""); location.hash = "#/code"; throw new Error("code"); }
   const data = await res.json();
   if (!res.ok) throw new Error(data.fout || "Er ging iets mis");
@@ -65,7 +71,7 @@ async function verstuurWachtrij() {
       await api("/api/markeer", wachtrij[0]);
     } catch (e) {
       if (e.message === "code") return;
-      if (e instanceof TypeError) { zetOnline(false); return; } // netwerkfout: later opnieuw
+      if (e.netwerk) return; // geen verbinding: later opnieuw
       toast(e.message); // serverfout (bv. leerling verwijderd): overslaan
     }
     wachtrij.shift();
@@ -112,8 +118,8 @@ function markeer(id, helm, fluo) {
 }
 
 async function download(path) {
-  const res = await fetch(path, { headers: { "X-Admin": session.get("fluo-admin"), "X-Code": store.get("fluo-code", "") } });
-  if (!res.ok) return toast("Downloaden mislukt");
+  const res = await fetch(path, { headers: { "X-Admin": session.get("fluo-admin"), "X-Code": store.get("fluo-code", "") } }).catch(() => null);
+  if (!res?.ok) return toast(res ? "Downloaden mislukt" : "Geen verbinding met de server");
   const blob = await res.blob();
   const name = (res.headers.get("Content-Disposition") || "").match(/filename="(.+)"/)?.[1] || "fluo.csv";
   const a = Object.assign(document.createElement("a"), { href: URL.createObjectURL(blob), download: name });
