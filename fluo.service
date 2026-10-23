@@ -1,0 +1,16 @@
+# Laat de fluo-app automatisch starten op een Raspberry Pi (zie README)
+[Unit]
+Description=Fluo-app
+After=network-online.target
+
+[Service]
+WorkingDirectory=/home/pi/Fluo
+ExecStart=/usr/bin/python3 /home/pi/Fluo/server.py
+Environment=FLUO_ADMIN_PASSWORD=verander-mij
+Environment=FLUO_CODE=
+Environment=FLUO_PORT=8080
+Restart=always
+User=pi
+
+[Install]
+WantedBy=multi-user.target
