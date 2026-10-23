@@ -1,0 +1,13 @@
+stempel
+moet op android en ios
+scherm met jaren daarna klassen en dan namen
+op naam tikken scherm met fluo(+1) en helm (+1)die kunnen aangeduid worden(kan terugkeren als fout aangeduid
+teller van leerling in hoek
+onderverdeling graden (als filter)
+(random winnaar kiezen (iemand met 10 punten *10 kans dan iemand met 1 punt))optioneel
+score manueel aanpassen
+kan in excel worden geopend
+voor de naam nummer in de klas
+zoekfunctie voor leerlingen apart te vinden 
+voorafgaand schermpje voor of zoekfunctie of lijst met klassen
+data centraal gesynchroniseerd
