@@ -1,13 +1,13 @@
 stempel
-moet op android en ios
+moet op android en ios --> best een website ofzo dus
 scherm met jaren daarna klassen en dan namen
-op naam tikken scherm met fluo(+1) en helm (+1)die kunnen aangeduid worden(kan terugkeren als fout aangeduid
-teller van leerling in hoek
+op naam tikken scherm met fluo(+1) en helm (+1)die kunnen aangeduid worden(kan terugkeren als fout aangeduid)
+teller van leerling in hoek --> Tonen hoeveel punten ze hebben
 onderverdeling graden (als filter)
 (random winnaar kiezen (iemand met 10 punten *10 kans dan iemand met 1 punt))optioneel
 score manueel aanpassen
-kan in excel worden geopend
+kan in excel worden geopend --> database in csv format
 voor de naam nummer in de klas
 zoekfunctie voor leerlingen apart te vinden 
 voorafgaand schermpje voor of zoekfunctie of lijst met klassen
-data centraal gesynchroniseerd
+data centraal gesynchroniseerd --> rpi gebruiken?
